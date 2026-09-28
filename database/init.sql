@@ -32,3 +32,33 @@ CREATE TABLE productos (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+***********************
+TABLA MOVIMIENTOS_STOCK
+***********************
+
+CREATE TABLE movimientos_stock (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    producto_id UUID NOT NULL,
+    tipo VARCHAR(20) NOT NULL,
+    cantidad NUMERIC(10,3) NOT NULL,
+    motivo VARCHAR(50) NOT NULL,
+    stock_anterior NUMERIC(10,3) NOT NULL,
+    stock_nuevo NUMERIC(10,3) NOT NULL,
+    usuario_id UUID,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_movimientos_stock_producto
+        FOREIGN KEY (producto_id)
+        REFERENCES productos(id),
+
+    CONSTRAINT fk_movimientos_stock_usuario
+        FOREIGN KEY (usuario_id)
+        REFERENCES usuarios(id),
+
+    CONSTRAINT chk_movimientos_stock_tipo
+        CHECK (tipo IN ('entrada', 'salida', 'ajuste')),
+
+    CONSTRAINT chk_movimientos_stock_cantidad
+        CHECK (cantidad > 0)
+);
