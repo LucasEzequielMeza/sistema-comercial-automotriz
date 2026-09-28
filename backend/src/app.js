@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 // Importacion de rutas
 import autenticacionRoutes from './modulos/autenticacion/autenticacion.routes.js';
+import productosRoutes from './modulos/productos/productos.routes.js';
 
 
 const app = express();
@@ -21,6 +22,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use('/api', autenticacionRoutes);
+app.use('/api/productos', productosRoutes);
 
 
 // Manejador de errores
