@@ -7,6 +7,7 @@ import autenticacionRoutes from './modulos/autenticacion/autenticacion.routes.js
 import productosRoutes from './modulos/productos/productos.routes.js';
 import stockRoutes from './modulos/stock/stock.routes.js';
 import movimientosStockRoutes from './modulos/movimientos_stock/movimientos_stock.routes.js';
+import categoriasRoutes from './modulos/categorias/categorias.routes.js';
 
 
 const app = express();
@@ -27,6 +28,7 @@ app.use('/api', autenticacionRoutes);
 app.use('/api/productos', productosRoutes);
 app.use('/api/stock', stockRoutes);
 app.use('/api/movimientos-stock', movimientosStockRoutes);
+app.use('/api/categorias', categoriasRoutes);
 
 // Manejador de errores
 

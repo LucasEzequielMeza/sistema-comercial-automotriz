@@ -11,7 +11,8 @@ CREATE TABLE usuarios (
     apellido VARCHAR(100) NOT NULL,
     usuario VARCHAR(50) NOT NULL UNIQUE,
     mail VARCHAR(150) NOT NULL UNIQUE,
-    contrasena VARCHAR(255) NOT NULL
+    contrasena VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 );
 
 ***************
@@ -24,6 +25,7 @@ CREATE TABLE productos (
     descripcion TEXT,
     imagen TEXT,
     codigo VARCHAR(50) UNIQUE,
+    categoria_id UUID REFERENCES categorias(id),
     precio_compra NUMERIC(10,2) NOT NULL,
     precio_venta NUMERIC(10,2) NOT NULL,
     stock NUMERIC(10,3) NOT NULL DEFAULT 0,
@@ -61,4 +63,17 @@ CREATE TABLE movimientos_stock (
 
     CONSTRAINT chk_movimientos_stock_cantidad
         CHECK (cantidad > 0)
+);
+
+****************
+TABLA CATEGORIAS
+****************
+
+CREATE TABLE categorias (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre VARCHAR(100) NOT NULL UNIQUE,
+    descripcion TEXT,
+    activo BOOLEAN NOT NULL DEFAULT true,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

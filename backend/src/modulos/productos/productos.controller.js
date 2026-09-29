@@ -2,8 +2,9 @@ import {pool} from '../../db.js';
 
 export const crearProducto = async (req, res, next) => {
     const {
-        nombre, descripcion, imagen, codigo, 
-        precio_compra, precio_venta, stock, 
+        nombre, descripcion, imagen, codigo,
+        categoria_id,
+        precio_compra, precio_venta, stock,
         stock_minimo,
     } = req.body;
 
@@ -16,9 +17,9 @@ export const crearProducto = async (req, res, next) => {
 
         // Insertamos el producto en la base de datos
         const result = await client.query(
-            `INSERT INTO productos (nombre, descripcion, imagen, codigo, precio_compra, precio_venta, stock, stock_minimo)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
-            [nombre, descripcion, imagen, codigo, precio_compra, precio_venta, stock, stock_minimo]
+            `INSERT INTO productos (nombre, descripcion, imagen, codigo, categoria_id, precio_compra, precio_venta, stock, stock_minimo)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+            [nombre, descripcion, imagen, codigo, categoria_id, precio_compra, precio_venta, stock, stock_minimo]
         );
 
         const productoCreado = result.rows[0];
@@ -56,7 +57,27 @@ export const crearProducto = async (req, res, next) => {
 export const obtenerProductos = async (req, res) => {
     try {
 
-        const result = await pool.query('SELECT * FROM productos');
+        const result = await pool.query(
+            `SELECT
+                productos.id,
+                productos.nombre,
+                productos.descripcion,
+                productos.imagen,
+                productos.codigo,
+                productos.categoria_id,
+                categorias.nombre AS categoria_nombre,
+                productos.precio_compra,
+                productos.precio_venta,
+                productos.stock,
+                productos.stock_minimo,
+                productos.activo,
+                productos.created_at,
+                productos.updated_at
+            FROM productos
+            LEFT JOIN categorias
+                ON productos.categoria_id = categorias.id
+            ORDER BY productos.nombre ASC`
+        );
 
         res.status(200).json(result.rows);
 
@@ -73,7 +94,28 @@ export const obtenerProductoPorId = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const result = await pool.query('SELECT * FROM productos WHERE id = $1', [id]);
+        const result = await pool.query(
+            `SELECT
+                productos.id,
+                productos.nombre,
+                productos.descripcion,
+                productos.imagen,
+                productos.codigo,
+                productos.categoria_id,
+                categorias.nombre AS categoria_nombre,
+                productos.precio_compra,
+                productos.precio_venta,
+                productos.stock,
+                productos.stock_minimo,
+                productos.activo,
+                productos.created_at,
+                productos.updated_at
+            FROM productos
+            LEFT JOIN categorias
+                ON productos.categoria_id = categorias.id
+            WHERE productos.id = $1`,
+            [id]
+        );
 
         if (result.rows.length === 0) {
             return res.status(404).json({ message: 'Producto no encontrado' });
@@ -95,18 +137,19 @@ export const actualizarProducto = async (req, res) => {
     const { id } = req.params;
 
     const {
-        nombre, descripcion, imagen, codigo, 
-        precio_compra, precio_venta, stock, 
+        nombre, descripcion, imagen, codigo,
+        categoria_id,
+        precio_compra, precio_venta, stock,
         stock_minimo,
     } = req.body;
 
     try {
         const result = await pool.query(
             `UPDATE productos 
-            SET nombre = $1, descripcion = $2, imagen = $3, codigo = $4, 
-                precio_compra = $5, precio_venta = $6, stock = $7, stock_minimo = $8
-            WHERE id = $9 RETURNING *`,
-            [nombre, descripcion, imagen, codigo, precio_compra, precio_venta, stock, stock_minimo, id]
+            SET nombre = $1, descripcion = $2, imagen = $3, codigo = $4, categoria_id = $5,
+                precio_compra = $6, precio_venta = $7, stock = $8, stock_minimo = $9
+            WHERE id = $10 RETURNING *`,
+            [nombre, descripcion, imagen, codigo, categoria_id, precio_compra, precio_venta, stock, stock_minimo, id]
         );
 
         if (result.rows.length === 0) {
