@@ -77,3 +77,21 @@ CREATE TABLE categorias (
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
+
+*****************
+TABLA PROVEEDORES
+*****************
+
+CREATE TABLE proveedores (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    nombre VARCHAR(150) NOT NULL,
+    cuit VARCHAR(20) UNIQUE,
+    telefono VARCHAR(50),
+    mail VARCHAR(150),
+    direccion VARCHAR(200),
+    contacto VARCHAR(150),
+    observaciones TEXT,
+    activo BOOLEAN NOT NULL DEFAULT true,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
