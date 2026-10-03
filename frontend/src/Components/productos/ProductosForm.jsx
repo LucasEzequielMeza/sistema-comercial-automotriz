@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react'
 import Card from '../UI/Card'
 import Input from '../UI/Input'
@@ -7,7 +6,6 @@ import Button from '../UI/Button'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useProducto } from '../../Context/ContextoProductos'
-import axios from '../../Api/axios.js'
 
 function ProductosForm() {
 
@@ -24,17 +22,13 @@ function ProductosForm() {
             descripcion: '',
             imagen: '',
             codigo: '',
-            categoria_id: '',
             precio_compra: '',
             precio_venta: '',
             porcentaje_ganancia: 25,
             stock: 0,
             stock_minimo: 0
         }
-
     })
-
-    const [categorias, setCategorias] = useState([])
 
     const [errorCodigo, setErrorCodigo] = useState('')
 
@@ -84,9 +78,6 @@ function ProductosForm() {
                 porcentaje_ganancia,
                 ...datosProducto
             } = data
-
-            datosProducto.categoria_id =
-                datosProducto.categoria_id || null
 
             respuesta = await crearProducto(
                 datosProducto
@@ -213,33 +204,6 @@ function ProductosForm() {
 
     useEffect(() => {
 
-        const obtenerCategorias = async () => {
-
-            try {
-
-                const respuesta = await axios.get('/categorias')
-
-                setCategorias(respuesta.data)
-
-            } catch (error) {
-
-                console.error(
-                    'Error al obtener las categorías:',
-                    error
-                )
-
-            }
-
-        }
-
-        if (!params.id) {
-            obtenerCategorias()
-        }
-
-    }, [params.id])
-
-    useEffect(() => {
-
         if (productoError.length > 0) {
 
             setErrorCodigo(
@@ -308,28 +272,6 @@ function ProductosForm() {
                     )}
 
                     <Input type="text" {...register('codigo')}/>
-
-                    {!params.id && (
-
-                        <>
-                            <Label htmlFor="categoria_id">Categoría</Label>
-                            <select
-                                className="bg-white border border-[#D6D3D1] rounded-md px-3 py-2 block my-2 w-full text-[#1C1917] focus:outline-none focus:border-[#13100F]"
-                                {...register('categoria_id')}
-                            >
-                                <option value="">Sin categoría</option>
-                                {categorias.map((categoria) => (
-                                    <option
-                                        key={categoria.id}
-                                        value={categoria.id}
-                                    >
-                                        {categoria.nombre}
-                                    </option>
-
-                                ))}
-                            </select>
-                        </>
-                    )}
 
                     <Label htmlFor="precio_compra">Precio de compra</Label>
                     <Input
@@ -408,7 +350,7 @@ function ProductosForm() {
                                     required: true,
                                     min: {
                                         value: 0,
-                                        message: 'El stock mínimo no puede ser negativo'
+                                        message: 'El stock mínimo es requerido'
                                     }
                                 })}
                             />

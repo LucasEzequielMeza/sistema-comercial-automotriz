@@ -64,7 +64,6 @@ function ProductosDetalle() {
 
                 <div className="space-y-3">
                     <p><span className="font-bold">Código:</span>{' '}{producto.codigo || 'Sin código'}</p>
-                    <p><span className="font-bold">Categoría:</span>{' '}{producto.categoria_nombre || 'Sin categoría'}</p>
                     <p><span className="font-bold">Descripción:</span>{' '}{producto.descripcion || 'Sin descripción'}</p>
                     <p><span className="font-bold">Precio de compra:</span>{' '}${producto.precio_compra}</p>
                     <p><span className="font-bold">Precio de venta:</span>{' '}${producto.precio_venta}</p>

@@ -27,7 +27,6 @@ function ProductosCard({
                 <h2 className="text-2xl font-bold mb-4">{producto.nombre}</h2>
                 <div className="space-y-2">
                     <p><span className="font-bold">Código:</span>{' '}{producto.codigo || 'Sin código'}</p>
-                    <p><span className="font-bold">Categoría:</span>{' '}{producto.categoria_nombre || 'Sin categoría'}</p>
                     <p><span className="font-bold">Precio:</span>{' '}${producto.precio_venta}</p>
                     <p><span className="font-bold">Stock:</span>{' '}{Number(producto.stock).toLocaleString('es-AR')}</p>
                 </div>
