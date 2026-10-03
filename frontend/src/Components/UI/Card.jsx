@@ -3,7 +3,7 @@ import React from 'react'
 function Card({children, className}) {
 
     return (
-        <div className={`bg-[#5A1725] p-6 rounded-md text-white ${className || ''}`}>
+        <div className={`bg-white p-6 rounded-md text-[#1C1917] ${className || ''}`}>
             {children}
         </div>
     )

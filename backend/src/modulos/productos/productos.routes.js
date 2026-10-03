@@ -8,6 +8,7 @@ import {
     buscarProductos,
     desactivarProducto,
     activarProducto
+
 } from './productos.controller.js';
 
 import { estaAutenticado } from '../../middleware/autenticacion.middleware.js';
@@ -24,8 +25,8 @@ router.get('/:id', estaAutenticado(), obtenerProductoPorId);
 
 router.put('/:id', estaAutenticado(), actualizarProducto);
 
-router.put('/desactivar/:id', estaAutenticado(), desactivarProducto);
+router.patch('/:id/desactivar', estaAutenticado(), desactivarProducto);
 
-router.put('/activar/:id', estaAutenticado(), activarProducto);
+router.patch('/:id/activar', estaAutenticado(), activarProducto);
 
 export default router;

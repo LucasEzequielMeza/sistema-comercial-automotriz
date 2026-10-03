@@ -1,4 +1,7 @@
 @import "tailwindcss";
+body {
+    background-color: #dadada;
+}
 
 h1 {
     display: block;

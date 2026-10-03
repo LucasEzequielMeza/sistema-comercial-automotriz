@@ -1,3 +1,4 @@
+
 import React from "react"
 import Card from "../Components/UI/Card"
 import Input from "../Components/UI/Input"
@@ -26,9 +27,9 @@ function RegisterPage() {
   });
 
   return (
-    <div className='h-[calc(100vh-8rem)] flex items-center justify-center'>
+    <div className='min-h-screen flex items-center justify-center px-4'>
       <Card>
-        <h1 className='text-2xl font-bold text-white flex items-center justify-center'>Registro</h1>
+        <h1 className='text-2xl font-bold text-[#1C1917] flex items-center justify-center'>Registro</h1>
         {erroresBackEnd?.length > 0 && (
           <div className="mt-4 mb-4 rounded-md bg-red-500/10 border border-red-500 p-3">
             {erroresBackEnd.map((error, index) => (
@@ -72,8 +73,8 @@ function RegisterPage() {
         </form>
 
         <div className='flex justify-between my-4'>
-          <p className="text-center text-gray-400">
-            ¿Tienes una cuenta? <Link className='font-bold' to="/iniciar-sesion">Ingresa aquí</Link>
+          <p className="text-center text-[#57534E]">
+            ¿Tienes una cuenta? <Link className='font-bold text-[#13100F]' to="/iniciar-sesion">Ingresa aquí</Link>
           </p>
         </div>
       </Card>

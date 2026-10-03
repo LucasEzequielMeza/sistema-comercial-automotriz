@@ -133,27 +133,44 @@ export const obtenerProductoPorId = async (req, res) => {
 }
 
 export const actualizarProducto = async (req, res) => {
-
     const { id } = req.params;
 
     const {
-        nombre, descripcion, imagen, codigo,
-        categoria_id,
-        precio_compra, precio_venta, stock,
-        stock_minimo,
+        nombre,
+        descripcion,
+        imagen,
+        codigo,
+        precio_compra,
+        precio_venta
     } = req.body;
 
     try {
         const result = await pool.query(
-            `UPDATE productos 
-            SET nombre = $1, descripcion = $2, imagen = $3, codigo = $4, categoria_id = $5,
-                precio_compra = $6, precio_venta = $7, stock = $8, stock_minimo = $9
-            WHERE id = $10 RETURNING *`,
-            [nombre, descripcion, imagen, codigo, categoria_id, precio_compra, precio_venta, stock, stock_minimo, id]
+            `UPDATE productos
+            SET nombre = $1,
+                descripcion = $2,
+                imagen = $3,
+                codigo = $4,
+                precio_compra = $5,
+                precio_venta = $6,
+                updated_at = CURRENT_TIMESTAMP
+            WHERE id = $7
+            RETURNING *`,
+            [
+                nombre,
+                descripcion,
+                imagen,
+                codigo,
+                precio_compra,
+                precio_venta,
+                id
+            ]
         );
 
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
+            return res.status(404).json({
+                message: 'Producto no encontrado'
+            });
         }
 
         res.status(200).json({
@@ -162,11 +179,17 @@ export const actualizarProducto = async (req, res) => {
         });
 
     } catch (error) {
-        
         console.error('Error al actualizar el producto:', error);
 
-        res.status(500).json({ message: 'Error al actualizar el producto' });
+        if (error.code === "23505") {
+            return res.status(409).json({
+                message: "El código del producto ya existe"
+            });
+        }
 
+        res.status(500).json({
+            message: 'Error al actualizar el producto'
+        });
     }
 }
 

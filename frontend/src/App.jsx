@@ -13,63 +13,62 @@ import RutaProtegida from './Components/autorizacion/RutaProtegida'
 
 function App() {
 
-  const [menuAbierto, setMenuAbierto] = useState(true)
+    const [menuAbierto, setMenuAbierto] = useState(true)
+    const location = useLocation()
 
-  const location = useLocation()
+    const esPaginaAutenticacion = location.pathname === "/iniciar-sesion" || location.pathname === "/registro"
 
-  const esPaginaAutenticacion =
-    location.pathname === "/iniciar-sesion" ||
-    location.pathname === "/registro"
+    return (
+        <>
+            {!esPaginaAutenticacion && (
+                <Navbar
+                    menuAbierto={menuAbierto}
+                    setMenuAbierto={setMenuAbierto}
+                />
+            )}
 
-  return (
+            <main
+                className={
+                    esPaginaAutenticacion
+                        ? "min-h-screen"
+                        : `min-h-screen transition-all duration-300 ${
+                            menuAbierto
+                                ? "pt-[330px] md:pt-0 md:ml-64"
+                                : "pt-14 md:pt-0 md:ml-20"
+                        }`
+                }
+            >
 
-    <>
-      {!esPaginaAutenticacion && (
+                <Container>
+                    <Routes>
 
-        <Navbar
-          menuAbierto={menuAbierto}
-          setMenuAbierto={setMenuAbierto}
-        />
+                        {/* Autenticación */}
+                        <Route path="/" element={<Navigate to="/productos" replace />}/>
+                        <Route path="/iniciar-sesion" element={<LoginPage />}/>
+                        <Route path="/registro" element={<RegisterPage />}/>
 
-      )}
+                        {/* Compatibilidad con la ruta anterior */}
+                        <Route path="/register" element={<Navigate to="/registro" replace />}/>
+                        <Route element={<RutaProtegida />}>
 
-      <main
-        className={
-          esPaginaAutenticacion
-            ? "min-h-screen"
-            : `transition-all duration-300 ${menuAbierto ? "ml-64" : "ml-20"}`
-        }
-      >
+                            {/* Productos */}
+                            <Route path="/productos" element={<ProductosPage />}/>
+                            <Route path="/productos/nuevo" element={<ProductosForm />}/>
+                            <Route path="/productos/:id/edit" element={<ProductosForm />}/>
+                            <Route path="/producto/detalle/:id" element={<ProductosDetalle />}/>
 
-        <Container>
-          <Routes>
-            {/* Autenticación */}
-            <Route path="/" element={<Navigate to="/productos" replace />} />
-            <Route path="/iniciar-sesion" element={<LoginPage />} />
-            <Route path="/registro" element={<RegisterPage />} />
+                            {/* Stock */}
+                            <Route path="/stock" element={<StockPage />}/>
+                            <Route path="/stock/detalle/:id" element={<StockDetalle />}/>
 
-            {/* Compatibilidad con la ruta anterior */}
-            <Route path="/register" element={<Navigate to="/registro" replace />} />
-
-            <Route element={<RutaProtegida />}>
-              {/* Productos */}
-              <Route path="/productos" element={<ProductosPage />} />
-              <Route path="/productos/nuevo" element={<ProductosForm />} />
-              <Route path="/productos/:id/edit" element={<ProductosForm />} />
-              <Route path="/producto/detalle/:id" element={<ProductosDetalle />} />
-
-              {/* Stock */}
-              <Route path="/stock" element={<StockPage />} />
-              <Route path="/stock/detalle/:id" element={<StockDetalle />} />
-
-              {/* Ruta inexistente */}
-              <Route path="*" element={<Navigate to="/productos" replace />} />
-            </Route>
-          </Routes>
-        </Container>
-      </main>
-    </>
-  )
+                            {/* Ruta inexistente */}
+                            <Route path="*" element={<Navigate to="/productos" replace />}/>
+                        </Route>
+                    </Routes>
+                </Container>
+            </main>
+        </>
+    )
 }
 
 export default App
