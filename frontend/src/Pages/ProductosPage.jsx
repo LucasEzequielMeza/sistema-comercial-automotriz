@@ -119,7 +119,7 @@ function ProductosPage() {
                     No hay productos para mostrar.
                 </p>
             ) : (
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(320px,1fr))] gap-6">
+                <div className="grid grid-cols-[repeat(auto-fill,320px)] justify-center gap-6">
                     {productosMostrar.map((producto) => (
                         <ProductosCard
                             key={producto.id}
