@@ -16,7 +16,7 @@ const app = express();
 // Middlewares
 
 app.use(cors({
-  origin: 'http://localhost:5173', // Reemplaza con la URL de tu frontend
+  origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Reemplaza con la URL de tu frontend
   credentials: true, // Permite enviar cookies
 }));    
 app.use(cookieParser());
