@@ -152,13 +152,10 @@ export function AuthProvider({ children }) {
 
             localStorage.setItem('token', token);
 
-            const perfil = await axios.get('/profile');
-
-            setUsuario(perfil.data.usuario);
-
+            setUsuario(usuario);
             setEstaAutorizado(true);
 
-            return perfil.data.usuario;
+            return usuario;
 
         } catch (error) {
 
@@ -171,7 +168,7 @@ export function AuthProvider({ children }) {
         }
 
     };
-
+    
     const logout = async () => {
 
         try {
