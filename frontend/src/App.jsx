@@ -34,8 +34,8 @@ function App() {
                         ? "min-h-screen"
                         : `min-h-screen transition-all duration-300 ${
                             menuAbierto
-                                ? "pt-[330px] md:pt-0 md:ml-64"
-                                : "pt-14 md:pt-0 md:ml-20"
+                                ? "md:ml-64"
+                                : "md:ml-20"
                         }`
                 }
             >
@@ -60,9 +60,12 @@ function App() {
                             <Route path="/stock/detalle/:id" element={<StockDetalle />}/>
 
                         </Route>
+
                         <Route path="*" element={<Navigate to="/productos" replace />}/>
+
                     </Routes>
                 </Container>
+
             </main>
         </>
     )

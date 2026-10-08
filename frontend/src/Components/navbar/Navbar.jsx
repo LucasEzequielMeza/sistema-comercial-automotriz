@@ -24,12 +24,13 @@ function Navbar({ menuAbierto, setMenuAbierto }) {
     return (
 
         <nav
-            className={`fixed left-0 top-0 bg-[#13100F] text-white transition-all duration-300 z-50 ${
+            className={`left-0 top-0 bg-[#13100F] text-white transition-all duration-300 z-50 md:fixed md:h-screen ${
                 menuAbierto
-                    ? 'w-full md:w-64 h-auto'
-                    : 'w-full md:w-20 h-14'
-            } md:h-screen`}
+                    ? 'relative w-full md:w-64 h-auto'
+                    : 'relative w-full md:w-20 h-14'
+            }`}
         >
+
             <div className="flex h-full flex-col">
 
                 <div className="flex h-14 items-center justify-between p-3">
@@ -110,7 +111,7 @@ function Navbar({ menuAbierto, setMenuAbierto }) {
 
                                 {menuAbierto && (
 
-                                    <span className="ml-3">
+                                    <span className="ml-3 truncate">
 
                                         {route.name}
 
