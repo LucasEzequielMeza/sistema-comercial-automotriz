@@ -64,12 +64,20 @@ export function AuthProvider({ children }) {
 
         const verificarSesion = async () => {
 
+            const token = localStorage.getItem('token');
+
+            if (!token) {
+                setCargando(false);
+                return;
+            }
+
             try {
+
                 const response = await axios.get('/profile');
 
                 setUsuario(response.data.usuario);
-
                 setEstaAutorizado(true);
+
             } catch (error) {
 
                 if (error.response?.status !== 401) {
@@ -84,10 +92,13 @@ export function AuthProvider({ children }) {
                 setEstaAutorizado(false);
 
             } finally {
+
                 setCargando(false);
+
             }
 
         };
+
         verificarSesion();
 
     }, []);
