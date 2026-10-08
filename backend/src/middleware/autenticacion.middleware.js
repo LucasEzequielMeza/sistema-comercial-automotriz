@@ -4,15 +4,18 @@ const SECRET = process.env.JWT_SECRET;
 
 export const estaAutenticado = (roles = []) => async (req, res, next) => {
 
-    // Obtenemos el token almacenado en la cookie
-    const token = req.cookies.token;
+    // Obtenemos el token enviado en el header Authorization
+    const authorization = req.headers.authorization;
 
-    // Si no existe el token, el usuario no está autenticado
-    if (!token) {
+    // Si no existe el header o no tiene el formato correcto
+    if (!authorization || !authorization.startsWith('Bearer ')) {
         return res.status(401).json({
             message: 'No estás autenticado'
         });
     }
+
+    // Extraemos solamente el token
+    const token = authorization.split(' ')[1];
 
     // Verificamos que el token sea válido
     jwt.verify(token, SECRET, async (err, decoded) => {
@@ -24,11 +27,9 @@ export const estaAutenticado = (roles = []) => async (req, res, next) => {
             });
         }
 
-        /*Guardamos el ID del usuario autenticado decoded contiene 
-        el payload que guardamos al crear el token*/
+        // Guardamos el ID del usuario autenticado
         req.userId = decoded.id;
 
         next();
     });
 };
-

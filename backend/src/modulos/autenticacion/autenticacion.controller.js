@@ -3,6 +3,7 @@ import {pool} from '../../db.js';
 import { generarTokenDeAcceso } from './jwt.js';
 
 export const login = async (req, res) => {
+
     try {
 
         // Obtenemos las credenciales enviadas
@@ -45,19 +46,10 @@ export const login = async (req, res) => {
             id: result.rows[0].id
         });
 
-        // Guardamos el token en una cookie HTTP-Only
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production'
-                ? 'none'
-                : 'lax',
-            maxAge: 24 * 60 * 60 * 1000
-        });
-
-        // Devolvemos solamente los datos necesarios
+        // Devolvemos el token al frontend
         return res.status(200).json({
             success: true,
+            token,
             usuario: {
                 id: result.rows[0].id,
                 usuario: result.rows[0].usuario
@@ -74,7 +66,6 @@ export const login = async (req, res) => {
         });
     }
 };
-
 
 export const register = async (req, res) => {
 
@@ -131,18 +122,9 @@ export const register = async (req, res) => {
             id: result.rows[0].id
         });
 
-        // Guardamos el token en una cookie HTTP-Only
-        res.cookie('token', token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: process.env.NODE_ENV === 'production'
-                ? 'none'
-                : 'lax',
-            maxAge: 24 * 60 * 60 * 1000
-        });
-
         return res.status(200).json({
             success: true,
+            token,
             usuario: {
                 id: result.rows[0].id,
                 nombre: result.rows[0].nombre,
@@ -162,24 +144,13 @@ export const register = async (req, res) => {
     }
 };
 
-
 export const logout = (req, res) => {
-
-    // Eliminamos la cookie del token usando la misma configuración de producción
-    res.clearCookie('token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: process.env.NODE_ENV === 'production'
-            ? 'none'
-            : 'lax'
-    });
 
     return res.json({
         success: true,
         message: 'Sesión cerrada'
     });
 };
-
 
 export const getProfile = async (req, res) => {
 

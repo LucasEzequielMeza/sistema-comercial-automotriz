@@ -7,6 +7,7 @@ import {
     disminuirStock,
     obtenerProductosConStockBajo
 } from './stock.controller.js';
+import { eliminarProducto } from '../productos/productos.controller.js';
 
 import { estaAutenticado } from '../../middleware/autenticacion.middleware.js';
 
@@ -21,5 +22,7 @@ router.get('/:id', estaAutenticado(), obtenerStockPorProducto);
 router.post('/aumentar/:id', estaAutenticado(), aumentarStock);
 
 router.post('/disminuir/:id', estaAutenticado(), disminuirStock);
+
+router.delete('/:id', estaAutenticado(), eliminarProducto);
 
 export default router;

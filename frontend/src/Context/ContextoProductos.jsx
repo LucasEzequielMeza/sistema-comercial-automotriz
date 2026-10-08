@@ -18,6 +18,7 @@ export function ProductoProvider({ children }) {
     const [producto, setProducto] = useState(null)
     const [productoError, setProductoError] = useState([])
     const [cargando, setCargando] = useState(false)
+    const [productosDesactivados, setProductosDesactivados] = useState([])
 
     const obtenerProductos = async () => {
 
@@ -203,13 +204,9 @@ export function ProductoProvider({ children }) {
             const productoActualizado = respuesta.data
 
             setProductos((productosActuales) =>
-                productosActuales.map((productoItem) =>
-                    productoItem.id === productoActualizado.id
-                        ? {
-                            ...productoItem,
-                            ...productoActualizado
-                        }
-                        : productoItem
+                productosActuales.filter(
+                    (productoItem) =>
+                        productoItem.id !== productoActualizado.id
                 )
             )
 
@@ -242,16 +239,34 @@ export function ProductoProvider({ children }) {
 
             const productoActualizado = respuesta.data
 
-            setProductos((productosActuales) =>
-                productosActuales.map((productoItem) =>
-                    productoItem.id === productoActualizado.id
-                        ? {
-                            ...productoItem,
-                            ...productoActualizado
-                        }
-                        : productoItem
-                )
-            )
+            setProductos((productosActuales) => {
+
+                const productoExiste =
+                    productosActuales.some(
+                        (productoItem) =>
+                            productoItem.id === productoActualizado.id
+                    )
+
+                if (productoExiste) {
+
+                    return productosActuales.map(
+                        (productoItem) =>
+                            productoItem.id === productoActualizado.id
+                                ? {
+                                    ...productoItem,
+                                    ...productoActualizado
+                                }
+                                : productoItem
+                    )
+
+                }
+
+                return [
+                    ...productosActuales,
+                    productoActualizado
+                ]
+
+            })
 
             return productoActualizado
 
@@ -262,6 +277,33 @@ export function ProductoProvider({ children }) {
             setProductoError([
                 error.response?.data?.message ||
                 'Error al activar el producto'
+            ])
+
+            return null
+
+        }
+
+    }
+
+    const obtenerProductosDesactivados = async () => {
+
+        try {
+
+            setProductoError([])
+
+            const respuesta = await axios.get('/productos/desactivados')
+
+            setProductosDesactivados(respuesta.data)
+
+            return respuesta.data
+
+        } catch (error) {
+
+            console.error('Error al obtener los productos desactivados:', error)
+
+            setProductoError([
+                error.response?.data?.message ||
+                'Error al obtener los productos desactivados'
             ])
 
             return null
@@ -284,6 +326,7 @@ export function ProductoProvider({ children }) {
                 producto,
                 productoError,
                 cargando,
+                productosDesactivados,
                 obtenerProductos,
                 obtenerProductoPorId,
                 crearProducto,
@@ -291,7 +334,8 @@ export function ProductoProvider({ children }) {
                 buscarProductos,
                 desactivarProducto,
                 activarProducto,
-                limpiarProductoError
+                obtenerProductosDesactivados,
+                limpiarProductoError,
             }}
         >
 

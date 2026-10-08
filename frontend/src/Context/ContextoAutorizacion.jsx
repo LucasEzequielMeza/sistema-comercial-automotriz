@@ -16,8 +16,6 @@ export const useAuth = () => {
     return context;
 };
 
-
-
 export function AuthProvider({ children }) {
 
     const [usuario, setUsuario] = useState(null);
@@ -43,13 +41,9 @@ export function AuthProvider({ children }) {
             setErroresBackEnd(mensajes);
         } else {
             setErroresBackEnd([
-
                 error.response?.data?.error ||
-
                 error.response?.data?.message ||
-
                 error.message ||
-
                 'Error desconocido'
             ]);
         }
@@ -63,8 +57,6 @@ export function AuthProvider({ children }) {
         }, 8000);
 
     };
-
-
 
     // Verifico si ya existe una sesión al cargar la aplicación
 
@@ -82,16 +74,13 @@ export function AuthProvider({ children }) {
 
                 if (error.response?.status !== 401) {
                     console.error(
-
                         'Error al verificar la sesión:',
-
                         error
                     );
-
                 }
 
+                localStorage.removeItem('token');
                 setUsuario(null);
-
                 setEstaAutorizado(false);
 
             } finally {
@@ -103,8 +92,6 @@ export function AuthProvider({ children }) {
 
     }, []);
 
-
-
     const register = async (data) => {
 
         try {
@@ -112,11 +99,13 @@ export function AuthProvider({ children }) {
 
             const response = await axios.post('/register',data);
 
-            const { usuario } = response.data;
+            const { usuario, token } = response.data;
 
-            if (!usuario) {
-                throw new Error('No se recibió correctamente el usuario');
+            if (!usuario || !token) {
+                throw new Error('No se recibió correctamente el usuario o token');
             }
+
+            localStorage.setItem('token', token);
 
             setUsuario(usuario);
 
@@ -136,27 +125,21 @@ export function AuthProvider({ children }) {
 
     };
 
-
-
     const login = async (data) => {
 
         try {
 
             setErroresBackEnd(null);
 
-            // Inicio sesión y obtengo la cookie de autenticación
-
             const response = await axios.post('/login', data);
 
-            const { usuario } = response.data;
+            const { usuario, token } = response.data;
 
-            if (!usuario) {
-
-                throw new Error('No se recibió correctamente el usuario');
-
+            if (!usuario || !token) {
+                throw new Error('No se recibió correctamente el usuario o token');
             }
 
-            // Obtengo el perfil completo del usuario
+            localStorage.setItem('token', token);
 
             const perfil = await axios.get('/profile');
 
@@ -178,24 +161,21 @@ export function AuthProvider({ children }) {
 
     };
 
-
-
     const logout = async () => {
 
         try {
 
-          await axios.post('/logout');
+            await axios.post('/logout');
 
         } catch (error) {
 
-          console.error('Error al cerrar sesión:', error);
+            console.error('Error al cerrar sesión:', error);
 
         } finally {
 
+            localStorage.removeItem('token');
             setUsuario(null);
-
             setEstaAutorizado(false);
-
             setErroresBackEnd(null);
 
             navigate('/iniciar-sesion');
@@ -204,10 +184,7 @@ export function AuthProvider({ children }) {
 
     };
 
-
-
     return (
-
         <ContextoAutorizacion.Provider
             value={{
                 usuario,

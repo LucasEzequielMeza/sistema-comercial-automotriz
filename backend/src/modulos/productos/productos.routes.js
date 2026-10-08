@@ -7,8 +7,8 @@ import {
     actualizarProducto,
     buscarProductos,
     desactivarProducto,
-    activarProducto
-
+    activarProducto,
+    obtenerProductosDesactivados
 } from './productos.controller.js';
 
 import { estaAutenticado } from '../../middleware/autenticacion.middleware.js';
@@ -20,6 +20,8 @@ router.post('/', estaAutenticado(), crearProducto);
 router.get('/', estaAutenticado(), obtenerProductos);
 
 router.get('/buscar', estaAutenticado(), buscarProductos);
+
+router.get('/desactivados', estaAutenticado(), obtenerProductosDesactivados);
 
 router.get('/:id', estaAutenticado(), obtenerProductoPorId);
 

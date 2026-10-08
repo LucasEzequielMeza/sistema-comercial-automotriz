@@ -11,6 +11,12 @@ export const privateRoutes = [
     },
 
     {
+        name: 'Productos desactivados',
+        path: '/productos/desactivados',
+        icon: FaBoxOpen
+    },
+
+    {
         name: 'Stock',
         path: '/stock',
         icon: MdInventory

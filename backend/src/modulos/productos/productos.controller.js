@@ -55,6 +55,7 @@ export const crearProducto = async (req, res, next) => {
 }
 
 export const obtenerProductos = async (req, res) => {
+
     try {
 
         const result = await pool.query(
@@ -76,6 +77,7 @@ export const obtenerProductos = async (req, res) => {
             FROM productos
             LEFT JOIN categorias
                 ON productos.categoria_id = categorias.id
+            WHERE productos.activo = true
             ORDER BY productos.nombre ASC`
         );
 
@@ -85,8 +87,9 @@ export const obtenerProductos = async (req, res) => {
 
         console.error('Error al obtener los productos:', error);
 
-        res.status(500).json({ message: 'Error al obtener los productos' });
-
+        res.status(500).json({
+            message: 'Error al obtener los productos'
+        });
     }
 }
 
@@ -265,5 +268,84 @@ export const activarProducto = async (req, res) => {
         console.error('Error al activar el producto:', error);
 
         res.status(500).json({ message: 'Error al activar el producto' });
+    }
+}
+
+export const eliminarProducto = async (req, res) => {
+
+    const { id } = req.params;
+
+    try {
+
+        const result = await pool.query(
+            `DELETE FROM productos
+            WHERE id = $1
+            RETURNING *`,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                message: 'Producto no encontrado'
+            });
+        }
+
+        res.status(200).json({
+            message: 'Producto eliminado exitosamente',
+            producto: result.rows[0]
+        });
+
+    } catch (error) {
+
+        console.error('Error al eliminar el producto:', error);
+
+        if (error.code === '23503') {
+            return res.status(409).json({
+                message: 'No se puede eliminar el producto porque tiene movimientos o registros relacionados'
+            });
+        }
+
+        res.status(500).json({
+            message: 'Error al eliminar el producto'
+        });
+    }
+}
+
+export const obtenerProductosDesactivados = async (req, res) => {
+
+    try {
+
+        const result = await pool.query(
+            `SELECT
+                productos.id,
+                productos.nombre,
+                productos.descripcion,
+                productos.imagen,
+                productos.codigo,
+                productos.categoria_id,
+                categorias.nombre AS categoria_nombre,
+                productos.precio_compra,
+                productos.precio_venta,
+                productos.stock,
+                productos.stock_minimo,
+                productos.activo,
+                productos.created_at,
+                productos.updated_at
+            FROM productos
+            LEFT JOIN categorias
+                ON productos.categoria_id = categorias.id
+            WHERE productos.activo = false
+            ORDER BY productos.nombre ASC`
+        );
+
+        res.status(200).json(result.rows);
+
+    } catch (error) {
+
+        console.error('Error al obtener los productos desactivados:', error);
+
+        res.status(500).json({
+            message: 'Error al obtener los productos desactivados'
+        });
     }
 }

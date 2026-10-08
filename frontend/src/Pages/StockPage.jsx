@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
-
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-
 import { useStock } from '../Context/ContextoStock'
-
 import Button from '../Components/UI/Button'
+import axios from '../Api/axios'
+
+import { FaTrash } from 'react-icons/fa'
+import { FaCheck } from 'react-icons/fa'
+import { FaTimes } from 'react-icons/fa'
 
 function StockPage() {
 
@@ -17,12 +19,34 @@ function StockPage() {
         obtenerStockBajo
     } = useStock()
 
+    const [productoAEliminar, setProductoAEliminar] = useState(null)
+
     useEffect(() => {
 
         obtenerStock()
         obtenerStockBajo()
 
     }, [])
+
+    const eliminarProducto = async () => {
+
+        try {
+
+            await axios.delete(`/stock/${productoAEliminar.id}`)
+
+            setProductoAEliminar(null)
+
+            await obtenerStock()
+            await obtenerStockBajo()
+
+        } catch (error) {
+
+            console.error('Error al eliminar el producto:', error)
+
+            setProductoAEliminar(null)
+
+        }
+    }
 
     return (
 
@@ -47,27 +71,11 @@ function StockPage() {
                     {/* Encabezados */}
 
                     <div className="grid grid-cols-5 gap-4 border-b border-zinc-400 pb-3 font-bold text-center">
-
-                        <div>
-                            Nombre
-                        </div>
-
-                        <div>
-                            Código
-                        </div>
-
-                        <div>
-                            Stock actual
-                        </div>
-
-                        <div>
-                            Stock mínimo
-                        </div>
-
-                        <div>
-                            Acción
-                        </div>
-
+                        <div>Nombre</div>
+                        <div>Código</div>
+                        <div>Stock actual</div>
+                        <div>Stock mínimo</div>
+                        <div>Acción</div>
                     </div>
 
                     {/* Productos */}
@@ -107,7 +115,7 @@ function StockPage() {
                                     {Number(producto.stock_minimo).toLocaleString('es-AR')}
                                 </div>
 
-                                <div className="flex justify-center">
+                                <div className="flex justify-center gap-2">
 
                                     <Button
                                         onClick={() =>
@@ -119,10 +127,18 @@ function StockPage() {
                                         Modificar stock
                                     </Button>
 
+                                    <button
+                                        type="button"
+                                        onClick={() =>
+                                            setProductoAEliminar(producto)
+                                        }
+                                        className="bg-red-500 hover:bg-red-600 text-white rounded-md px-3 py-2 transition"
+                                        title="Eliminar producto"
+                                    >
+                                        <FaTrash />
+                                    </button>
                                 </div>
-
                             </div>
-
                         )
                     })}
 
@@ -130,6 +146,41 @@ function StockPage() {
 
             </div>
 
+            {productoAEliminar && (
+
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md text-center">
+                        <div className="flex justify-center mb-4">
+                            <div className="bg-red-100 text-red-500 rounded-full p-4">
+                                <FaTrash size={24} />
+                            </div>
+                        </div>
+
+                        <h2 className="text-xl font-bold mb-2">Eliminar producto</h2>
+                        <p className="text-zinc-600 mb-6">
+                            ¿Estás seguro de que querés eliminar "{productoAEliminar.nombre}"?
+                        </p>
+                        <div className="flex justify-center gap-3">
+                            <button
+                                type="button"
+                                onClick={() => setProductoAEliminar(null)}
+                                className="flex items-center gap-2 bg-zinc-200 hover:bg-zinc-300 text-zinc-800 rounded-md px-4 py-2 transition"
+                            >
+                                <FaTimes />
+                                Cancelar
+                            </button>
+                            <button
+                                type="button"
+                                onClick={eliminarProducto}
+                                className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white rounded-md px-4 py-2 transition"
+                            >
+                                <FaCheck />
+                                Eliminar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

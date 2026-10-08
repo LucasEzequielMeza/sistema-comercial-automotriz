@@ -10,6 +10,7 @@ import StockDetalle from './Components/stock/StockDetalle'
 import Navbar from './Components/navbar/Navbar'
 import Container from './Components/UI/Container'
 import RutaProtegida from './Components/autorizacion/RutaProtegida'
+import ProductosDesactivadosPage from './Pages/ProductosDesactivadosPage'
 
 function App() {
 
@@ -42,28 +43,24 @@ function App() {
                 <Container>
                     <Routes>
 
-                        {/* Autenticación */}
                         <Route path="/" element={<Navigate to="/productos" replace />}/>
                         <Route path="/iniciar-sesion" element={<LoginPage />}/>
                         <Route path="/registro" element={<RegisterPage />}/>
-
-                        {/* Compatibilidad con la ruta anterior */}
                         <Route path="/register" element={<Navigate to="/registro" replace />}/>
+
                         <Route element={<RutaProtegida />}>
 
-                            {/* Productos */}
                             <Route path="/productos" element={<ProductosPage />}/>
+                            <Route path="/productos/desactivados" element={<ProductosDesactivadosPage />}/>
                             <Route path="/productos/nuevo" element={<ProductosForm />}/>
                             <Route path="/productos/:id/edit" element={<ProductosForm />}/>
                             <Route path="/producto/detalle/:id" element={<ProductosDetalle />}/>
 
-                            {/* Stock */}
                             <Route path="/stock" element={<StockPage />}/>
                             <Route path="/stock/detalle/:id" element={<StockDetalle />}/>
 
-                            {/* Ruta inexistente */}
-                            <Route path="*" element={<Navigate to="/productos" replace />}/>
                         </Route>
+                        <Route path="*" element={<Navigate to="/productos" replace />}/>
                     </Routes>
                 </Container>
             </main>
