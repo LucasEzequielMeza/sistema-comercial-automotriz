@@ -26,6 +26,7 @@ export function AuthProvider({ children }) {
     const navigate = useNavigate();
 
     const temporizadorError = useRef(null);
+    const inicializandoSesion = useRef(true);
 
     const mostrarError = (error) => {
 
@@ -67,6 +68,7 @@ export function AuthProvider({ children }) {
             const token = localStorage.getItem('token');
 
             if (!token) {
+                inicializandoSesion.current = false;
                 setCargando(false);
                 return;
             }
@@ -93,6 +95,7 @@ export function AuthProvider({ children }) {
 
             } finally {
 
+                inicializandoSesion.current = false;
                 setCargando(false);
 
             }
@@ -154,6 +157,7 @@ export function AuthProvider({ children }) {
 
             setUsuario(usuario);
             setEstaAutorizado(true);
+            setCargando(false);
 
             return usuario;
 
@@ -168,7 +172,7 @@ export function AuthProvider({ children }) {
         }
 
     };
-    
+
     const logout = async () => {
 
         try {
